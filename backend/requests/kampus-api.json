@@ -1,60 +1,87 @@
 {
   "info": {
-    "name": "Kampus API",
+    "name": "Kampus API - Sprint 8",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "eventId",
+      "value": ""
+    }
+  ],
   "item": [
     {
       "name": "1 Health",
       "request": {
         "method": "GET",
-        "url": {
-          "raw": "http://localhost:3000/health",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["health"]
+        "url": "http://localhost:3000/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Student doğru', () => pm.expect(pm.response.json().student).to.eql('2416501039'));"
+            ]
+          }
         }
-      }
+      ]
     },
     {
       "name": "2 Etkinlik listesi",
       "request": {
         "method": "GET",
-        "url": {
-          "raw": "http://localhost:3000/events",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["events"]
+        "url": "http://localhost:3000/events"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Liste dönüyor', () => pm.expect(body).to.be.an('array'));",
+              "if (Array.isArray(body) && body.length > 0) pm.collectionVariables.set('eventId', body[0]._id);"
+            ]
+          }
         }
-      }
+      ]
     },
     {
       "name": "3 Tek etkinlik",
       "request": {
         "method": "GET",
-        "url": {
-          "raw": "http://localhost:3000/events/event-2",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["events", "event-2"]
+        "url": "http://localhost:3000/events/{{eventId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('_id var', () => pm.expect(pm.response.json()._id).to.exist);"
+            ]
+          }
         }
-      }
+      ]
     },
     {
       "name": "4 Olmayan etkinlik",
       "request": {
         "method": "GET",
-        "url": {
-          "raw": "http://localhost:3000/events/yok",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["events", "yok"]
+        "url": "http://localhost:3000/events/yok"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+            ]
+          }
         }
-      }
+      ]
     },
     {
       "name": "5 Etkinlik oluştur",
@@ -68,21 +95,26 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Cisco Packet Tracer Laboratuvarı\",\n  \"category\": \"Atölye\",\n  \"capacity\": 35,\n  \"date\": \"2026-12-15\",\n  \"time\": \"13:00\",\n  \"location\": \"Ağ Laboratuvarı\",\n  \"description\": \"Packet Tracer kullanılarak temel ağ topolojileri oluşturulacak.\"\n}",
+          "raw": "{\n  \"title\": \"CCNA Packet Tracer Atölyesi\",\n  \"category\": \"Atölye\",\n  \"capacity\": 32,\n  \"date\": \"2026-12-18\",\n  \"time\": \"14:00\",\n  \"location\": \"Ağ Laboratuvarı\",\n  \"description\": \"Switch ve router yapılandırmalarının Packet Tracer üzerinde uygulanacağı etkinlik.\"\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
         },
-        "url": {
-          "raw": "http://localhost:3000/events",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["events"]
+        "url": "http://localhost:3000/events"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('_id ve createdAt var', () => { const b = pm.response.json(); pm.expect(b._id).to.exist; pm.expect(b.createdAt).to.exist; });"
+            ]
+          }
         }
-      }
+      ]
     },
     {
       "name": "6 Eksik veri",
@@ -103,14 +135,18 @@
             }
           }
         },
-        "url": {
-          "raw": "http://localhost:3000/events",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["events"]
+        "url": "http://localhost:3000/events"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('400 Bad Request', () => pm.response.to.have.status(400));"
+            ]
+          }
         }
-      }
+      ]
     }
   ]
 }

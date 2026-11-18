@@ -1,156 +1,86 @@
-# Sprint 7 Backend
+# Sprint 8 Backend — MongoDB ve Mongoose
 
 Öğrenci No: **2416501039**
 
-Bu sprintte frontend'in yanında Node.js ve Express kullanılarak REST API oluşturulmuştur.
+Sprint 8'de Sprint 7 REST adresleri korunmuş, etkinlik verileri RAM dizisi yerine MongoDB'de kalıcı hale getirilmiştir.
 
 ## Kurulum
 
-Backend klasörüne gir:
-
 ```bash
 cd backend
-```
-
-Paketleri kur:
-
-```bash
 npm install
 ```
 
-Sunucuyu çalıştır:
+MongoDB Atlas bağlantı adresini yalnızca kendi `backend/.env` dosyana yaz:
+
+```env
+PORT=3000
+MONGODB_URI=mongodb+srv://KULLANICI:SIFRE@CLUSTER_ADRESI/kampus
+```
+
+> Gerçek Atlas adresi, kullanıcı adı veya şifre GitHub'a, README'ye, `.env.example`a, Postman collection'a veya ekran görüntüsüne yazılmaz.
+
+## Seed
+
+Veritabanını 6 örnek etkinlikle doldur:
+
+```bash
+npm run seed
+```
+
+Seed her çalıştığında önce `events` koleksiyonunu temizler, sonra aynı 6 kaydı ekler. Bu nedenle iki kez çalıştırınca da kayıt sayısı 6 kalır.
+
+## Çalıştırma
 
 ```bash
 npm run dev
 ```
 
-Sunucu adresi:
+Sunucu:
 
 ```text
 http://localhost:3000
 ```
 
-## Ortam Değişkeni
+## Endpointler
 
-`.env` dosyasında:
+| Method | Endpoint | Başarılı | Hata |
+|---|---|---:|---:|
+| GET | `/health` | 200 | — |
+| GET | `/events` | 200 | — |
+| GET | `/events/:id` | 200 | 404 |
+| POST | `/events` | 201 | 400 |
 
-```text
-PORT=3000
-```
+`GET /events?category=Atölye` ile kategori filtresi kullanılabilir.
 
-`.env` dosyası GitHub'a gönderilmez. Örnek değer `.env.example` dosyasında bulunmaktadır.
+## MongoDB / Mongoose
 
-## REST Sözleşmesi
+- Bağlantı: `src/config/database.js`
+- Model: `src/models/event-model.js`
+- Seed verisi: `src/data/seed-events.js`
+- Seed scripti: `src/seed.js`
+- Controller: `src/controllers/event-controller.js`
 
-| Method | Endpoint | Amaç | Başarılı | Hata | Durum |
-|---|---|---|---|---|---|
-| GET | `/events` | Etkinlik listesini getir | 200 | — | Bu sprint |
-| GET | `/events/:id` | Tek etkinliği getir | 200 | 404 | Bu sprint |
-| POST | `/events` | Yeni etkinlik oluştur | 201 | 400 | Bu sprint |
-| PATCH | `/events/:id` | Etkinliği güncelle | 200 | 400, 404 | Sprint 9 |
-| DELETE | `/events/:id` | Etkinliği sil | 204 | 404 | Sprint 9 |
+Modelde `required`, `trim`, `minlength`, `maxlength`, `enum`, `min`, `default` ve `timestamps` kuralları kullanılmaktadır.
 
-## Health Check
+## Postman
 
-```text
-GET /health
-```
-
-Başarılı cevap:
-
-```json
-{
-  "status": "ok",
-  "time": "...",
-  "student": "2416501039"
-}
-```
-
-## GET /events
-
-Tüm etkinlikleri getirir.
-
-```text
-GET http://localhost:3000/events
-```
-
-Başarılı durum kodu:
-
-```text
-200 OK
-```
-
-Kategoriye göre filtreleme de yapılabilir:
-
-```text
-GET /events?category=Atölye
-```
-
-## GET /events/:id
-
-Belirtilen id'ye sahip etkinliği getirir.
-
-Örnek:
-
-```text
-GET http://localhost:3000/events/event-2
-```
-
-Etkinlik bulunamazsa:
-
-```text
-404 Not Found
-```
-
-Hata biçimi:
-
-```json
-{
-  "error": {
-    "message": "Event not found"
-  }
-}
-```
-
-## POST /events
-
-Yeni etkinlik oluşturur.
-
-```text
-POST http://localhost:3000/events
-```
-
-Zorunlu alanlar:
-
-- `title`
-- `category`
-- `date`
-
-Başarılı kayıt:
-
-```text
-201 Created
-```
-
-Eksik zorunlu alan gönderildiğinde:
-
-```text
-400 Bad Request
-```
-
-## Postman Testleri
-
-Sprint için hazırlanan 6 istek Postman collection olarak aşağıdaki dosyada bulunmaktadır:
+6 istek:
 
 ```text
 requests/kampus-api.json
 ```
 
-Test edilen istekler:
+Sprint 8'de `_id` MongoDB tarafından üretildiği için tek etkinlik isteği `event-2` kullanmaz. Collection, `GET /events` yanıtındaki ilk gerçek `_id` değerini otomatik olarak `eventId` değişkenine kaydeder.
 
-1. `GET /health` → 200
-2. `GET /events` → 200
-3. `GET /events/event-2` → 200
-4. `GET /events/yok` → 404
-5. `POST /events` → 201
-6. Eksik veri ile `POST /events` → 400
+## Kalıcılık testi
+
+1. `npm run seed`
+2. `npm run dev`
+3. `POST /events` ile yeni kayıt ekle → 201
+4. `GET /events` → 7 kayıt
+5. Sunucuyu `Ctrl+C` ile kapat
+6. Tekrar `npm run dev`
+7. `GET /events` → eklenen kayıt hâlâ vardır
+
+Bu davranış Sprint 8'in kalıcılık şartını doğrular.

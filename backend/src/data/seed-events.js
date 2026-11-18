@@ -1,6 +1,5 @@
-const events = [
+export const seedEvents = [
   {
-    id: "event-1",
     title: "Ağ Güvenliğine Giriş",
     category: "Seminer",
     capacity: 60,
@@ -11,7 +10,6 @@ const events = [
       "Temel ağ güvenliği kavramları ve güncel tehditler üzerine öğrenci semineri."
   },
   {
-    id: "event-2",
     title: "Linux Komut Satırı Atölyesi",
     category: "Atölye",
     capacity: 30,
@@ -22,7 +20,6 @@ const events = [
       "Linux terminalinde dosya yönetimi, izinler ve temel sistem komutları uygulamalı olarak işlenecek."
   },
   {
-    id: "event-3",
     title: "Python ile Ağ Otomasyonu",
     category: "Atölye",
     capacity: 25,
@@ -33,9 +30,8 @@ const events = [
       "Python kullanılarak temel ağ işlemlerinin otomatikleştirilmesi üzerine uygulamalı çalışma."
   },
   {
-    id: "event-4",
     title: "Siber Güvenlik Kariyer Sohbeti",
-    category: "Kariyer",
+    category: "Söyleşi",
     capacity: 80,
     date: "2026-12-02",
     time: "16:00",
@@ -44,9 +40,8 @@ const events = [
       "Siber güvenlik alanındaki kariyer yolları ve sektör beklentileri hakkında söyleşi."
   },
   {
-    id: "event-5",
     title: "Git ve GitHub Uygulamaları",
-    category: "Eğitim",
+    category: "Seminer",
     capacity: 40,
     date: "2026-12-05",
     time: "11:00",
@@ -55,7 +50,6 @@ const events = [
       "Git komutları, branch kullanımı ve GitHub üzerinde proje yönetimi uygulamaları."
   },
   {
-    id: "event-6",
     title: "Mikrodenetleyicilerle Proje Geliştirme",
     category: "Seminer",
     capacity: 50,
@@ -66,5 +60,3 @@ const events = [
       "Mikrodenetleyici tabanlı projelerde kullanılan temel donanım ve yazılım yaklaşımları."
   }
 ];
-
-export default events;
